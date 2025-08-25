@@ -1,0 +1,32 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Fichiers d'éditeur
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.log
+
+# Dépendances (si ajoutées plus tard)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers de build (si ajoutés plus tard)
+dist/
+build/
+*.min.js
+*.min.css
+
+# Fichiers de sauvegarde
+*.bak
+*.backup

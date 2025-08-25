@@ -1,0 +1,35 @@
+{
+  "name": "tic-tac-toe-enhanced",
+  "version": "1.0.0",
+  "description": "Un jeu de Tic Tac Toe moderne et amélioré avec IA intelligente, interface responsive et système de scores persistant",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000"
+  },
+  "keywords": [
+    "tic-tac-toe",
+    "game",
+    "ai",
+    "artificial-intelligence",
+    "javascript",
+    "html5",
+    "css3",
+    "responsive",
+    "localStorage",
+    "game-development"
+  ],
+  "author": "eliDaniel007",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eliDaniel007/tic-tac-toe-enhanced.git"
+  },
+  "homepage": "https://elidaniel007.github.io/tic-tac-toe-enhanced",
+  "bugs": {
+    "url": "https://github.com/eliDaniel007/tic-tac-toe-enhanced/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe - Jeu Amélioré</title>
+    <link rel="stylesheet" href="jeu.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Section d'inscription -->
+    <section id="inscriptionSection" class="main-section active">
+        <div class="container">
+            <div class="form-card">
+                <div class="header">
+                    <h1>🎮 Tic Tac Toe</h1>
+                    <p>Commencez votre aventure de jeu !</p>
+                </div>
+                <form id="inscriptionForm" onsubmit="envoyerFormulaire(); return false;">
+                    <div class="form-group">
+                        <label for="nom">Votre nom</label>
+                        <input type="text" id="nom" name="nom" required placeholder="Entrez votre nom">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mode de jeu</label>
+                        <div class="game-mode-selector">
+                            <label class="mode-option">
+                                <input type="radio" name="gameMode" value="twoPlayers" required checked onchange="toggleFriendName()">
+                                <span class="mode-custom">
+                                    <span class="mode-icon">👥</span>
+                                    <span class="mode-text">À deux joueurs</span>
+                                    <span class="mode-desc">Jouez avec un ami</span>
+                                </span>
+                            </label>
+                            <label class="mode-option">
+                                <input type="radio" name="gameMode" value="vsAI" required onchange="toggleFriendName()">
+                                <span class="mode-custom">
+                                    <span class="mode-icon">🤖</span>
+                                    <span class="mode-text">Contre l'IA</span>
+                                    <span class="mode-desc">Défiez l'ordinateur</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="friendNameGroup" style="display: block;">
+                        <label for="friendName">Nom de votre ami</label>
+                        <input type="text" id="friendName" name="friendName" placeholder="Entrez le nom de votre ami">
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">
+                        <span>Commencer</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            </div>
+    </section>
+    
+    <!-- Section de choix de difficulté -->
+    <section id="difficulteSection" class="main-section">
+        <div class="container">
+            <div class="form-card">
+                <div class="header">
+                    <h2>⚙️ Configuration du Jeu</h2>
+                    <p>Choisissez vos préférences</p>
+                </div>
+                
+                <div class="config-options">
+                    <div class="form-group">
+                        <label for="difficulty">Niveau de difficulté</label>
+                        <div class="difficulty-selector">
+                            <button type="button" class="difficulty-btn active" data-value="3" onclick="selectDifficulty(this, 3)">
+                                <span class="difficulty-icon">😊</span>
+                                <span class="difficulty-text">Facile</span>
+                                <span class="difficulty-desc">3x3</span>
+                            </button>
+                            <button type="button" class="difficulty-btn" data-value="4" onclick="selectDifficulty(this, 4)">
+                                <span class="difficulty-icon">😐</span>
+                                <span class="difficulty-text">Moyen</span>
+                                <span class="difficulty-desc">4x4</span>
+                            </button>
+                            <button type="button" class="difficulty-btn" data-value="5" onclick="selectDifficulty(this, 5)">
+                                <span class="difficulty-icon">😈</span>
+                                <span class="difficulty-text">Difficile</span>
+                                <span class="difficulty-desc">5x5</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Votre symbole</label>
+                        <div class="symbol-selector">
+                            <label class="symbol-option">
+                                <input type="radio" name="symbole" value="X" required checked>
+                                <span class="symbol-custom symbol-x">X</span>
+                            </label>
+                            <label class="symbol-option">
+                                <input type="radio" name="symbole" value="O" required>
+                                <span class="symbol-custom symbol-o">O</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="commencerJeu()" class="btn-primary">
+                    <span>Jouer !</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+            </div>
+    </section>
+
+    <!-- Section du jeu -->
+    <section id="jeuSection" class="main-section">
+        <div class="container">
+            <div class="game-container">
+                <div class="game-header">
+                    <div class="player-info">
+                        <div class="current-player">
+                            <span class="player-label">Tour de :</span>
+                            <span id="currentPlayerSymbol" class="player-symbol">X</span>
+                        </div>
+                        <div class="game-stats">
+                            <span class="stat">
+                                <span class="stat-label" id="playerXLabel">X:</span>
+                                <span id="scoreX" class="stat-value">0</span>
+                            </span>
+                            <span class="stat">
+                                <span class="stat-label" id="playerOLabel">O:</span>
+                                <span id="scoreO" class="stat-value">0</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="game-controls">
+                        <button onclick="nouvellePartie()" class="btn-primary">
+                            <span>Nouvelle Partie</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M12 7V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        
+                        <button onclick="afficherScores()" class="btn-secondary">
+                            <span>Scores</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 21H16C17.1046 21 18 20.1046 18 19V5C18 3.89543 17.1046 3 16 3H8C6.89543 3 6 3.89543 6 5V19C6 20.1046 6.89543 21 8 21Z" stroke="currentColor" stroke-width="2"/>
+                                <path d="M10 7H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M10 11H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M10 15H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        
+                        <button onclick="quitterJeu()" class="btn-secondary quit-game-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Quitter
+                        </button>
+                    </div>
+        </div>
+        
+                <div class="game-board-container">
+                    <div id="board" class="game-board"></div>
+                    <div id="status" class="game-status"></div>
+                </div>
+            </div>
+        </div>
+        </section>
+
+        <!-- Section des scores -->
+    <section id="scoresSection" class="main-section">
+        <div class="container">
+            <div class="form-card">
+                <div class="header">
+                    <h2>🏆 Tableau des Scores</h2>
+                    <p>Historique de vos performances</p>
+                </div>
+                
+                <div class="scores-container">
+                    <div class="score-card">
+                        <div class="score-header">
+                            <span class="player-symbol score-x">X</span>
+                            <span class="score-label" id="scoreXLabel">Victoires</span>
+                        </div>
+                        <div class="score-value" id="totalScoreX">0</div>
+                    </div>
+                    
+                    <div class="score-card">
+                        <div class="score-header">
+                            <span class="player-symbol score-o">O</span>
+                            <span class="score-label" id="scoreOLabel">Victoires</span>
+                        </div>
+                        <div class="score-value" id="totalScoreO">0</div>
+                    </div>
+                    
+                    <div class="score-card">
+                        <div class="score-header">
+                            <span class="score-label">Parties</span>
+                        </div>
+                        <div class="score-value" id="totalGames">0</div>
+                    </div>
+                </div>
+                
+                <button onclick="revenirAuJeu()" class="btn-primary">
+                    <span>Revenir au Jeu</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                
+                <button onclick="reinitialiserScores()" class="btn-secondary reset-scores-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 6H5H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6H19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Réinitialiser les Scores
+                </button>
+                
+                <button onclick="quitterJeu()" class="btn-secondary quit-game-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Quitter le Jeu
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Message de victoire -->
+    <div id="winningMessage" class="winning-message">
+        <div class="winning-content">
+            <h2 id="winningText">Félicitations !</h2>
+            <p id="winningSubtext">Vous avez gagné !</p>
+            <div class="final-scores" id="finalScores" style="display: none;">
+                <h3>🏆 Scores de la Partie</h3>
+                <div class="final-score-item">
+                    <span id="winnerName" class="winner-name"></span>
+                    <span id="winnerScore" class="winner-score"></span>
+                </div>
+                <div class="final-score-item">
+                    <span id="loserName" class="loser-name"></span>
+                    <span id="loserScore" class="loser-score"></span>
+                </div>
+            </div>
+            <button onclick="nouvellePartie()" class="btn-primary">Nouvelle Partie</button>
+        </div>
+    </div>
+
+    <script src="jeu.js"></script>
+</body>
+</html>
+
